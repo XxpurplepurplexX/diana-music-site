@@ -9,7 +9,7 @@ const CATALOG = {
   tee:    { name: "Maglietta dell'album",               cents: 3500, sizes: ['S', 'M', 'L', 'XL'] },
   hoodie: { name: 'Felpa con cappuccio "Debut"',        cents: 6500, sizes: ['S', 'M', 'L', 'XL'] },
   vinyl:  { name: 'Vinile in edizione limitata',        cents: 3000, sizes: null },
-  poster: { name: "Poster con la copertina dell'album", cents: 2000, sizes: null },
+  poster: { name: "Poster con la copertina dell'album", cents: 500,  sizes: null },
   cap:    { name: 'Cappellino classico da papà',        cents: 2500, sizes: null, oneSize: true }
 };
 const ONE_SIZE = 'Taglia unica';
