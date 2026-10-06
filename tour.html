@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DIANA — date del tour e biglietti per i prossimi concerti.">
+  <title>Tour — DIANA</title>
+  <style>
+    :root {
+      --bianco: #FFFFFF;
+      --nero: #1A1A1A;
+      --blu: #3B82F6;
+      --blu-scuro: #2563EB;
+      --grigio: #F3F4F6;
+      --grigio-bordo: #E5E7EB;
+      --grigio-testo: #6B7280;
+      --nav-h: 72px;
+      --max-w: 1100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+      background: var(--bianco);
+      color: var(--nero);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Navigazione fissa ---------- */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--grigio-bordo);
+      z-index: 100;
+    }
+    .nav .container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav__logo { font-weight: 900; font-size: 1.25rem; letter-spacing: 0.2em; }
+    .nav__links { display: flex; gap: 36px; list-style: none; }
+    .nav__links a {
+      position: relative;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 0;
+    }
+    .nav__links a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%; height: 2px;
+      background: var(--blu);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav__links a:hover::after,
+    .nav__links a:focus-visible::after,
+    .nav__links a[aria-current="page"]::after { transform: scaleX(1); }
+
+    .nav__toggle {
+      display: none;
+      background: none;
+      border: 0;
+      width: 44px; height: 44px;
+      cursor: pointer;
+      position: relative;
+    }
+    .nav__toggle span,
+    .nav__toggle span::before,
+    .nav__toggle span::after {
+      position: absolute;
+      left: 10px;
+      width: 24px; height: 2px;
+      background: var(--nero);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .nav__toggle span { top: 21px; }
+    .nav__toggle span::before, .nav__toggle span::after { content: ""; left: 0; }
+    .nav__toggle span::before { top: -7px; }
+    .nav__toggle span::after { top: 7px; }
+    .nav.is-open .nav__toggle span { background: transparent; }
+    .nav.is-open .nav__toggle span::before { transform: translateY(7px) rotate(45deg); }
+    .nav.is-open .nav__toggle span::after { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ---------- Pulsanti ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--blu);
+      color: var(--bianco);
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn:hover { background: var(--blu-scuro); transform: translateY(-2px); }
+    .btn:focus-visible, .nav a:focus-visible, .nav__toggle:focus-visible {
+      outline: 3px solid var(--blu);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Intestazione pagina ---------- */
+    .page-head {
+      padding: calc(var(--nav-h) + 72px) 0 56px;
+      text-align: center;
+    }
+    .eyebrow {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--blu);
+      margin-bottom: 12px;
+    }
+    .page-title {
+      display: inline-block;
+      position: relative;
+      font-size: clamp(2.2rem, 7vw, 4.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      line-height: 1.05;
+      padding-bottom: 0.2em;
+    }
+    .page-title::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%;
+      height: clamp(5px, 0.8vw, 8px);
+      border-radius: 999px;
+      background: linear-gradient(90deg, #BFDBFE, var(--blu), #1D4ED8, var(--blu), #BFDBFE);
+      background-size: 200% 100%;
+      transform-origin: left;
+      animation: sottolinea 1.2s cubic-bezier(.7, 0, .2, 1) 0.2s both,
+                 scorri 4s linear 1.4s infinite;
+    }
+    @keyframes sottolinea { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes scorri { from { background-position: 0% 0; } to { background-position: 200% 0; } }
+    .page-head p { color: var(--grigio-testo); margin-top: 20px; }
+
+    /* ---------- Elenco concerti ---------- */
+    .tour { padding-bottom: 96px; }
+    .shows { list-style: none; border-top: 1px solid var(--grigio-bordo); }
+    .show {
+      display: grid;
+      grid-template-columns: 170px 1fr auto;
+      align-items: center;
+      gap: 32px;
+      padding: 28px 8px;
+      border-bottom: 1px solid var(--grigio-bordo);
+      transition: background 0.2s ease;
+      /* entrata: una riga alla volta */
+      opacity: 0;
+      animation: entra 0.6s cubic-bezier(.22, 1, .36, 1) both;
+      animation-delay: calc(0.5s + var(--i) * 0.12s);
+    }
+    .show:hover { background: var(--grigio); }
+    @keyframes entra {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .show__date {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      color: var(--blu);
+    }
+    .show__day {
+      font-size: clamp(2.2rem, 5vw, 3.25rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .show__day small {
+      font-size: 0.55em;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-left: 6px;
+    }
+    .show__year {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--grigio-testo);
+    }
+    .show__city {
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+    }
+    .show__venue { color: var(--grigio-testo); }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--grigio-bordo);
+      padding: 32px 0;
+      font-size: 0.85rem;
+      color: var(--grigio-testo);
+      text-align: center;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 720px) {
+      :root { --nav-h: 64px; }
+      .nav__toggle { display: block; }
+      .nav__links {
+        position: absolute;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: var(--bianco);
+        border-bottom: 1px solid var(--grigio-bordo);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .nav.is-open .nav__links { max-height: 320px; }
+      .nav__links li a { display: block; padding: 18px 24px; }
+      .nav__links a::after { display: none; }
+      .nav__links a[aria-current="page"] { color: var(--blu); }
+
+      .show {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 28px 0;
+      }
+      .show .btn { justify-self: start; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .show .btn { justify-self: stretch; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .show { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigazione fissa -->
+  <header class="nav" id="nav">
+    <div class="container">
+      <a href="index.html" class="nav__logo" aria-label="DIANA, torna alla home">DIANA</a>
+      <button class="nav__toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span>
+      </button>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#musica">Musica</a></li>
+        <li><a href="merch.html">Merchandising</a></li>
+        <li><a href="tour.html" aria-current="page">Tour</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <span class="eyebrow">Tour 2027</span>
+        <h1 class="page-title">Prossimi concerti</h1>
+        <p>Diana dal vivo: scopri le date e assicurati il tuo posto.</p>
+      </div>
+    </section>
+
+    <section class="tour" aria-labelledby="tour-title">
+      <div class="container">
+        <h2 id="tour-title" hidden>Elenco delle date</h2>
+        <!-- URL dei biglietti provvisori: sostituire con i link reali del rivenditore -->
+        <ul class="shows">
+          <li class="show" style="--i: 0">
+            <time class="show__date" datetime="2027-03-15">
+              <span class="show__day">15<small>MAR</small></span>
+              <span class="show__year">2027</span>
+            </time>
+            <div>
+              <div class="show__city">Milano</div>
+              <div class="show__venue">Alcatraz</div>
+            </div>
+            <a class="btn" href="https://example.com/biglietti/milano" target="_blank" rel="noopener noreferrer" aria-label="Acquista biglietti per Milano, 15 marzo 2027">Acquista biglietti</a>
+          </li>
+          <li class="show" style="--i: 1">
+            <time class="show__date" datetime="2027-03-18">
+              <span class="show__day">18<small>MAR</small></span>
+              <span class="show__year">2027</span>
+            </time>
+            <div>
+              <div class="show__city">Torino</div>
+              <div class="show__venue">Hiroshima Mon Amour</div>
+            </div>
+            <a class="btn" href="https://example.com/biglietti/torino" target="_blank" rel="noopener noreferrer" aria-label="Acquista biglietti per Torino, 18 marzo 2027">Acquista biglietti</a>
+          </li>
+          <li class="show" style="--i: 2">
+            <time class="show__date" datetime="2027-03-22">
+              <span class="show__day">22<small>MAR</small></span>
+              <span class="show__year">2027</span>
+            </time>
+            <div>
+              <div class="show__city">Bologna</div>
+              <div class="show__venue">Estragon Club</div>
+            </div>
+            <a class="btn" href="https://example.com/biglietti/bologna" target="_blank" rel="noopener noreferrer" aria-label="Acquista biglietti per Bologna, 22 marzo 2027">Acquista biglietti</a>
+          </li>
+          <li class="show" style="--i: 3">
+            <time class="show__date" datetime="2027-03-27">
+              <span class="show__day">27<small>MAR</small></span>
+              <span class="show__year">2027</span>
+            </time>
+            <div>
+              <div class="show__city">Firenze</div>
+              <div class="show__venue">Tuscany Hall</div>
+            </div>
+            <a class="btn" href="https://example.com/biglietti/firenze" target="_blank" rel="noopener noreferrer" aria-label="Acquista biglietti per Firenze, 27 marzo 2027">Acquista biglietti</a>
+          </li>
+          <li class="show" style="--i: 4">
+            <time class="show__date" datetime="2027-04-02">
+              <span class="show__day">02<small>APR</small></span>
+              <span class="show__year">2027</span>
+            </time>
+            <div>
+              <div class="show__city">Roma</div>
+              <div class="show__venue">Atlantico</div>
+            </div>
+            <a class="btn" href="https://example.com/biglietti/roma" target="_blank" rel="noopener noreferrer" aria-label="Acquista biglietti per Roma, 2 aprile 2027">Acquista biglietti</a>
+          </li>
+          <li class="show" style="--i: 5">
+            <time class="show__date" datetime="2027-04-06">
+              <span class="show__day">06<small>APR</small></span>
+              <span class="show__year">2027</span>
+            </time>
+            <div>
+              <div class="show__city">Napoli</div>
+              <div class="show__venue">Casa della Musica</div>
+            </div>
+            <a class="btn" href="https://example.com/biglietti/napoli" target="_blank" rel="noopener noreferrer" aria-label="Acquista biglietti per Napoli, 6 aprile 2027">Acquista biglietti</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 DIANA. Tutti i diritti riservati.</div>
+  </footer>
+
+  <script>
+    // Menu mobile
+    const nav = document.getElementById('nav');
+    const toggle = nav.querySelector('.nav__toggle');
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
+    });
+    nav.querySelectorAll('.nav__links a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Apri il menu');
+      });
+    });
+  </script>
+</body>
+</html>

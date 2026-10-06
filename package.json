@@ -1,0 +1,12 @@
+{
+  "name": "diana-music-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sito dell'artista DIANA con negozio e checkout Stripe",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "stripe": "^17.0.0"
+  }
+}

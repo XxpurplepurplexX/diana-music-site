@@ -1,0 +1,21 @@
+# Variabili d'ambiente e chiavi: mai su GitHub
+.env
+.env.*
+!.env.example
+
+# Dipendenze e file locali di Vercel
+node_modules/
+.vercel/
+
+# Impostazioni dell'editor (si condividono solo le estensioni consigliate)
+.vscode/*
+!.vscode/extensions.json
+
+# Log
+*.log
+npm-debug.log*
+
+# File di sistema
+.DS_Store
+Thumbs.db
+desktop.ini

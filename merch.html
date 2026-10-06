@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DIANA — negozio ufficiale di merchandising: magliette, felpe, vinili, poster e cappellini.">
+  <title>Merchandising — DIANA</title>
+  <style>
+    :root {
+      --bianco: #FFFFFF;
+      --nero: #1A1A1A;
+      --blu: #3B82F6;
+      --blu-scuro: #2563EB;
+      --grigio: #F3F4F6;
+      --grigio-bordo: #E5E7EB;
+      --grigio-testo: #6B7280;
+      --nav-h: 72px;
+      --max-w: 1100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+      background: var(--bianco);
+      color: var(--nero);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Navigazione fissa ---------- */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--grigio-bordo);
+      z-index: 100;
+    }
+    .nav .container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav__logo { font-weight: 900; font-size: 1.25rem; letter-spacing: 0.2em; margin-right: auto; }
+    .nav__links { display: flex; gap: 36px; list-style: none; }
+    .nav__links a {
+      position: relative;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 0;
+    }
+    .nav__links a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%; height: 2px;
+      background: var(--blu);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav__links a:hover::after,
+    .nav__links a:focus-visible::after,
+    .nav__links a[aria-current="page"]::after { transform: scaleX(1); }
+
+    .nav__cart {
+      position: relative;
+      width: 44px; height: 44px;
+      display: grid;
+      place-items: center;
+      background: none;
+      border: 0;
+      color: var(--nero);
+      cursor: pointer;
+      margin-left: 20px;
+    }
+    .nav__cart svg { width: 24px; height: 24px; }
+    .nav__badge {
+      position: absolute;
+      top: 2px; right: 0;
+      min-width: 20px; height: 20px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--blu);
+      color: var(--bianco);
+      font-size: 0.7rem;
+      font-weight: 700;
+      line-height: 20px;
+      text-align: center;
+      transform: scale(0);
+      transition: transform 0.2s ease;
+    }
+    .nav__badge.is-visible { transform: scale(1); }
+    /* lampeggio del badge quando si aggiunge un articolo */
+    .nav__badge.bump { animation: lampeggia 0.9s ease; }
+    @keyframes lampeggia {
+      0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); }
+      20%  { transform: scale(1.4);  background: var(--nero); }
+      40%  { transform: scale(1);    background: var(--blu); }
+      60%  { transform: scale(1.25); background: var(--nero); }
+      100% { transform: scale(1);    background: var(--blu); box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
+    }
+
+    .nav__toggle {
+      display: none;
+      background: none;
+      border: 0;
+      width: 44px; height: 44px;
+      cursor: pointer;
+      position: relative;
+    }
+    .nav__toggle span,
+    .nav__toggle span::before,
+    .nav__toggle span::after {
+      position: absolute;
+      left: 10px;
+      width: 24px; height: 2px;
+      background: var(--nero);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .nav__toggle span { top: 21px; }
+    .nav__toggle span::before, .nav__toggle span::after { content: ""; left: 0; }
+    .nav__toggle span::before { top: -7px; }
+    .nav__toggle span::after { top: 7px; }
+    .nav.is-open .nav__toggle span { background: transparent; }
+    .nav.is-open .nav__toggle span::before { transform: translateY(7px) rotate(45deg); }
+    .nav.is-open .nav__toggle span::after { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ---------- Pulsanti ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--blu);
+      color: var(--bianco);
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 32px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn:hover { background: var(--blu-scuro); transform: translateY(-2px); }
+    .btn__lock { width: 16px; height: 16px; flex-shrink: 0; }
+    .btn:disabled { background: #9CA3AF; cursor: not-allowed; transform: none; }
+    .btn--block { width: 100%; }
+    .btn--lg { padding: 18px 32px; font-size: 1rem; margin-top: 18px; }
+
+    .btn:focus-visible, .nav a:focus-visible, .nav__toggle:focus-visible, .nav__cart:focus-visible,
+    select:focus-visible, .qty button:focus-visible, .cart__remove:focus-visible, .cart__close:focus-visible {
+      outline: 3px solid var(--blu);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Intestazione pagina ---------- */
+    .page-head {
+      padding: calc(var(--nav-h) + 72px) 0 48px;
+      text-align: center;
+    }
+    .eyebrow {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--blu);
+      margin-bottom: 12px;
+    }
+    .page-title {
+      display: inline-block;
+      position: relative;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      padding-bottom: 0.2em;
+    }
+    .page-title::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%;
+      height: clamp(5px, 0.8vw, 8px);
+      border-radius: 999px;
+      background: linear-gradient(90deg, #BFDBFE, var(--blu), #1D4ED8, var(--blu), #BFDBFE);
+      background-size: 200% 100%;
+      transform-origin: left;
+      animation: sottolinea 1.2s cubic-bezier(.7, 0, .2, 1) 0.2s both,
+                 scorri 4s linear 1.4s infinite;
+    }
+    @keyframes sottolinea { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes scorri { from { background-position: 0% 0; } to { background-position: 200% 0; } }
+    .page-head p { color: var(--grigio-testo); margin-top: 20px; }
+
+    /* ---------- Griglia prodotti ---------- */
+    .shop { padding-bottom: 96px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px 40px;
+    }
+    .product {
+      display: flex;
+      flex-direction: column;
+      background: var(--bianco);
+      border-radius: 12px;
+      padding: 16px 16px 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Area immagine: è un pulsante che apre l'anteprima rapida.
+       overflow: hidden tiene lo zoom dell'immagine dentro i bordi. */
+    .product__img {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 0;
+      border-radius: 8px;
+      background: var(--grigio);
+      cursor: zoom-in;
+      margin-bottom: 20px;
+      font: inherit;
+    }
+    .product__img:focus-visible { outline: 3px solid var(--blu); outline-offset: 3px; }
+    .product__img-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      color: var(--grigio-testo);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-align: center;
+      transition: transform 0.5s ease;
+    }
+    .product__hint {
+      position: absolute;
+      left: 50%; bottom: 14px;
+      transform: translate(-50%, 8px);
+      background: var(--bianco);
+      color: var(--nero);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      opacity: 0;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* Etichette BEST SELLER / LIMITED */
+    .tag {
+      position: absolute;
+      top: 12px; right: 12px;
+      z-index: 1;
+      padding: 5px 10px;
+      border-radius: 4px;
+      color: var(--bianco);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      line-height: 1.2;
+    }
+    .tag--blu  { background: var(--blu); }
+    .tag--nero { background: var(--nero); }
+
+    /* Hover sulla scheda: solo su dispositivi con mouse */
+    @media (hover: hover) {
+      .product:hover {
+        transform: scale(1.02);
+        box-shadow: 0 18px 40px rgba(26, 26, 26, 0.14);
+      }
+      .product:hover .product__img-inner { transform: scale(1.05); }
+      .product__img:hover .product__hint,
+      .product__img:focus-visible .product__hint { opacity: 1; transform: translate(-50%, 0); }
+
+      /* pulsante contornato che si riempie di blu al passaggio sulla scheda */
+      .product .product__actions .btn {
+        background: transparent;
+        color: var(--blu);
+        box-shadow: inset 0 0 0 2px var(--blu);
+      }
+      .product:hover .product__actions .btn,
+      .product .product__actions .btn:focus-visible {
+        background: var(--blu);
+        color: var(--bianco);
+      }
+      .product .product__actions .btn:hover { background: var(--blu-scuro); box-shadow: inset 0 0 0 2px var(--blu-scuro); }
+    }
+    .product__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+    }
+    .product__name { font-size: 1.2rem; font-weight: 800; line-height: 1.3; }
+    .product__price { font-size: 1.15rem; font-weight: 800; color: var(--blu); white-space: nowrap; }
+    .product__actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      align-items: stretch;
+    }
+    .product__actions .btn { flex: 1; padding-left: 20px; padding-right: 20px; }
+    .size-select {
+      position: relative;
+      flex: 0 0 130px;
+    }
+    .size-select select {
+      width: 100%;
+      height: 100%;
+      min-height: 48px;
+      appearance: none;
+      -webkit-appearance: none;
+      border: 2px solid var(--nero);
+      border-radius: 999px;
+      background: var(--bianco);
+      color: var(--nero);
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0 40px 0 20px;
+      cursor: pointer;
+    }
+    .size-select::after {
+      content: "";
+      position: absolute;
+      right: 18px; top: 50%;
+      width: 8px; height: 8px;
+      border-right: 2px solid var(--nero);
+      border-bottom: 2px solid var(--nero);
+      transform: translateY(-70%) rotate(45deg);
+      pointer-events: none;
+    }
+    .size-note {
+      flex: 0 0 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border: 2px solid var(--grigio-bordo);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--grigio-testo);
+    }
+    .shop__note {
+      margin-top: 56px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--grigio-testo);
+    }
+
+    /* ---------- Carrello (pannello laterale) ---------- */
+    body.no-scroll { overflow: hidden; }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 26, 0.45);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      z-index: 200;
+    }
+    .overlay.is-open { opacity: 1; visibility: visible; }
+
+    .cart {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: min(420px, 100%);
+      background: var(--bianco);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      visibility: hidden;
+      transition: transform 0.45s cubic-bezier(.22, 1, .36, 1), visibility 0.45s;
+      z-index: 300;
+    }
+    .cart.is-open { transform: translateX(0); visibility: visible; }
+
+    .cart__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--grigio-bordo);
+    }
+    .cart__title { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; }
+    .cart__close {
+      width: 40px; height: 40px;
+      border: 0;
+      background: none;
+      font-size: 1.75rem;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--nero);
+    }
+    .cart__body { flex: 1; overflow-y: auto; padding: 8px 24px; }
+
+    /* Carrello vuoto */
+    .cart__empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 56px 0;
+    }
+    .cart__empty svg { width: 48px; height: 48px; color: var(--blu); margin-bottom: 16px; }
+    .cart__empty p { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+    .cart__empty span { color: var(--grigio-testo); font-size: 0.9rem; margin-bottom: 24px; }
+
+    /* ---------- Anteprima rapida (modale) ---------- */
+    .qv {
+      position: fixed;
+      inset: 0;
+      z-index: 350;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(26, 26, 26, 0.35);
+      backdrop-filter: blur(8px);          /* sfondo sfumato */
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .qv.is-open { opacity: 1; visibility: visible; }
+    .qv__dialog {
+      position: relative;
+      width: 100%;
+      max-width: 880px;
+      max-height: calc(100vh - 48px);
+      max-height: calc(100dvh - 48px);
+      overflow-y: auto;
+      background: var(--bianco);
+      border-radius: 16px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding: 40px;
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.35s cubic-bezier(.22, 1, .36, 1);
+    }
+    .qv.is-open .qv__dialog { transform: none; }
+    .qv__close {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 44px; height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--grigio);
+      color: var(--nero);
+      font-size: 1.75rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .qv__close:hover { background: var(--blu); color: var(--bianco); }
+    .qv__close:focus-visible { outline: 3px solid var(--blu); outline-offset: 3px; }
+    .qv__img {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      background: var(--grigio);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--grigio-testo);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .qv__info { display: flex; flex-direction: column; justify-content: center; }
+    .qv__name { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 900; line-height: 1.15; padding-right: 40px; }
+    .qv__price { font-size: 1.5rem; font-weight: 800; color: var(--blu); margin: 10px 0 16px; }
+    .qv__desc { color: var(--grigio-testo); margin-bottom: 28px; }
+    .qv__info .product__actions { margin-top: 0; }
+
+    /* ---------- Notifica "aggiunto al carrello" ---------- */
+    .toast {
+      position: fixed;
+      top: calc(var(--nav-h) + 16px);
+      right: 16px;
+      max-width: min(360px, calc(100% - 32px));
+      background: var(--blu);
+      color: var(--bianco);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
+      transform: translateX(calc(100% + 32px));
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(.22, 1, .36, 1), opacity 0.4s ease;
+      z-index: 400;
+      pointer-events: none;
+    }
+    .toast.is-visible { transform: translateX(0); opacity: 1; }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--grigio-bordo);
+    }
+    .cart-item__img {
+      width: 72px; height: 72px;
+      background: var(--grigio);
+      border-radius: 4px;
+    }
+    .cart-item__name { font-weight: 700; line-height: 1.3; }
+    .cart-item__size, .cart-item__unit { font-size: 0.85rem; color: var(--grigio-testo); }
+    .cart-item__right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .cart-item__total { font-weight: 800; }
+    .cart__remove {
+      background: none;
+      border: 0;
+      font: inherit;
+      font-size: 0.8rem;
+      color: var(--grigio-testo);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .cart__remove:hover { color: var(--blu); }
+
+    .qty {
+      display: inline-flex;
+      align-items: center;
+      border: 1.5px solid var(--nero);
+      border-radius: 999px;
+      margin-top: 10px;
+    }
+    .qty button {
+      width: 32px; height: 32px;
+      border: 0;
+      background: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--nero);
+      border-radius: 50%;
+    }
+    .qty button:hover { color: var(--blu); }
+    .qty span { min-width: 24px; text-align: center; font-weight: 700; font-size: 0.9rem; }
+
+    .cart__footer {
+      padding: 20px 24px 24px;
+      border-top: 1px solid var(--grigio-bordo);
+    }
+    .cart__subtotal {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .cart__note { font-size: 0.8rem; color: var(--grigio-testo); }
+    .cart__msg { min-height: 1.4em; margin-top: 12px; font-size: 0.85rem; font-weight: 600; color: var(--blu); text-align: center; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--grigio-bordo);
+      padding: 32px 0;
+      font-size: 0.85rem;
+      color: var(--grigio-testo);
+      text-align: center;
+    }
+
+    /* ---------- Responsive ---------- */
+    /* Carrello a schermo intero su mobile: sale dal basso */
+    @media (max-width: 767px) {
+      .qv { padding: 12px; align-items: flex-end; }
+      .qv__dialog { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+      .qv__img { max-height: 42vh; aspect-ratio: auto; height: 42vh; }
+      .cart {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        top: auto;
+        transform: translateY(100%);
+        box-shadow: none;
+      }
+      .cart.is-open { transform: translateY(0); }
+      .cart__close {
+        width: 52px; height: 52px;
+        font-size: 2.6rem;
+        margin-right: -8px;
+      }
+      /* il pulsante di checkout resta fisso in fondo: solo la lista scorre */
+      .cart__footer {
+        position: sticky;
+        bottom: 0;
+        background: var(--bianco);
+        padding-bottom: max(24px, env(safe-area-inset-bottom));
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.06);
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root { --nav-h: 64px; }
+      .grid { grid-template-columns: 1fr; gap: 48px; }
+      .nav__cart { margin-left: 0; }
+      .nav__toggle { display: block; }
+      .nav__links {
+        position: absolute;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: var(--bianco);
+        border-bottom: 1px solid var(--grigio-bordo);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .nav.is-open .nav__links { max-height: 320px; }
+      .nav__links li a { display: block; padding: 18px 24px; }
+      .nav__links a::after { display: none; }
+      .nav__links a[aria-current="page"] { color: var(--blu); }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .product__actions { flex-direction: column; }
+      .size-select, .size-note { flex-basis: auto; }
+      .cart__header, .cart__footer { padding-left: 16px; padding-right: 16px; }
+      .cart__body { padding: 8px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigazione fissa -->
+  <header class="nav" id="nav">
+    <div class="container">
+      <a href="index.html" class="nav__logo" aria-label="DIANA, torna alla home">DIANA</a>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#musica">Musica</a></li>
+        <li><a href="merch.html" aria-current="page">Merchandising</a></li>
+        <li><a href="tour.html">Tour</a></li>
+      </ul>
+      <button class="nav__cart" id="cart-open" aria-label="Apri il carrello (0 articoli)" aria-controls="cart" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="nav__badge" id="cart-badge" aria-hidden="true">0</span>
+      </button>
+      <button class="nav__toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <span class="eyebrow">Negozio ufficiale</span>
+        <h1 class="page-title">Merch</h1>
+        <p>Capi ed edizioni limitate dell'album di debutto.</p>
+      </div>
+    </section>
+
+    <section class="shop">
+      <div class="container">
+        <div class="grid" id="product-grid"></div>
+        <p class="shop__note">Pagamento sicuro gestito da Stripe.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 DIANA. Tutti i diritti riservati.</div>
+  </footer>
+
+  <!-- Carrello -->
+  <!-- Anteprima rapida -->
+  <div class="qv" id="qv" aria-hidden="true">
+    <div class="qv__dialog" role="dialog" aria-modal="true" aria-labelledby="qv-name">
+      <button class="qv__close" id="qv-close" type="button" aria-label="Chiudi l'anteprima">&times;</button>
+      <div class="qv__img" id="qv-img" role="img"></div>
+      <div class="qv__info">
+        <h2 class="qv__name" id="qv-name"></h2>
+        <p class="qv__price" id="qv-price"></p>
+        <p class="qv__desc" id="qv-desc"></p>
+        <div class="product__actions" id="qv-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
+    <div class="cart__header">
+      <h2 class="cart__title" id="cart-title">Carrello</h2>
+      <button class="cart__close" id="cart-close" aria-label="Chiudi il carrello">&times;</button>
+    </div>
+    <div class="cart__body" id="cart-body"></div>
+    <div class="cart__footer">
+      <div class="cart__subtotal"><span>Subtotale</span><span id="cart-subtotal">$0.00</span></div>
+      <p class="cart__note">Spedizione e tasse calcolate alla cassa.</p>
+      <button class="btn btn--block btn--lg" id="checkout" type="button">Vai alla cassa</button>
+      <p class="cart__msg" id="cart-msg" role="status" aria-live="polite"></p>
+    </div>
+  </aside>
+
+  <script>
+    // Prezzi solo per la visualizzazione: quelli addebitati sono definiti sul server (api/checkout.js).
+    // fem: true per i nomi femminili ("aggiunta" invece di "aggiunto" nella notifica)
+    const PRODUCTS = [
+      { id: 'tee',    name: "Maglietta dell'album",               price: 35, sizes: ['S', 'M', 'L', 'XL'], fem: true },
+      { id: 'hoodie', name: 'Felpa con cappuccio "Debut"',        price: 65, sizes: ['S', 'M', 'L', 'XL'], fem: true,
+        tag: { text: 'BEST SELLER', style: 'blu' } },
+      { id: 'vinyl',  name: 'Vinile in edizione limitata',        price: 30, sizes: null,
+        tag: { text: 'LIMITED', style: 'nero' } },
+      { id: 'poster', name: "Poster con la copertina dell'album", price: 20, sizes: null },
+      { id: 'cap',    name: 'Cappellino classico da papà',        price: 25, sizes: null, oneSize: true }
+    ];
+    // Descrizioni per l'anteprima rapida (testo segnaposto da sostituire)
+    const DESCRIPTIONS = {
+      tee:    "Maglietta in cotone pesante con la grafica dell'album di debutto stampata sul fronte. Vestibilità regolare, unisex.",
+      hoodie: 'Felpa con cappuccio in cotone felpato, logo "Debut" ricamato sul petto e tasca a marsupio. Calda e morbida, unisex.',
+      vinyl:  "Vinile 180 g in edizione limitata e numerata, con copertina apribile e testi stampati all'interno.",
+      poster: "Stampa della copertina dell'album su carta opaca di alta qualità, formato 50 × 70 cm. Spedito arrotolato in tubo rigido.",
+      cap:    'Cappellino stile "dad hat" in cotone lavato, logo DIANA ricamato e chiusura regolabile sul retro.'
+    };
+    const ONE_SIZE = 'Taglia unica';
+    const STORAGE_KEY = 'diana-cart';             // carrello salvato
+    const CHECKOUT_ENDPOINT = '/api/checkout';    // funzione serverless che crea la Checkout Session
+    const LOCK_ICON = '<svg class="btn__lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
+    const BAG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>';
+
+    const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const fmt = n => money.format(n);
+
+    // Piccolo helper per creare elementi senza usare innerHTML
+    function el(tag, props = {}, children = []) {
+      const node = document.createElement(tag);
+      Object.entries(props).forEach(([k, v]) => {
+        if (k === 'class') node.className = v;
+        else if (k === 'text') node.textContent = v;
+        else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+        else node.setAttribute(k, v);
+      });
+      children.forEach(c => c && node.append(c));
+      return node;
+    }
+
+    // ---------- Salvataggio del carrello in localStorage ----------
+    // Formato salvato: [{ id: 'hoodie', size: 'M', qty: 2 }, ...]
+    // I dati letti vengono validati: prodotti inesistenti o quantità non valide vengono scartati.
+    function loadCart() {
+      let saved;
+      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (e) { saved = null; }
+      if (!Array.isArray(saved)) return [];
+      return saved.filter(i => {
+        const p = i && PRODUCTS.find(x => x.id === i.id);
+        if (!p || !Number.isInteger(i.qty) || i.qty < 1 || i.qty > 99) return false;
+        if (p.sizes) return p.sizes.includes(i.size);
+        return i.size === (p.oneSize ? ONE_SIZE : null);
+      });
+    }
+
+    function saveCart() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cart)); } catch (e) { /* storage non disponibile (es. navigazione privata) */ }
+    }
+
+    let cart = loadCart(); // ripristino al caricamento della pagina
+
+    // ---------- Griglia prodotti ----------
+    const grid = document.getElementById('product-grid');
+    // Selettore taglia + pulsante "Aggiungi al carrello" (usati sia nella scheda sia nell'anteprima)
+    function buildActions(p, afterAdd) {
+      let sizeControl, select;
+      if (p.sizes) {
+        select = el('select', { 'aria-label': 'Taglia per ' + p.name },
+          p.sizes.map(s => el('option', { value: s, text: 'Taglia ' + s })));
+        select.value = 'M';
+        sizeControl = el('div', { class: 'size-select' }, [select]);
+      } else if (p.oneSize) {
+        sizeControl = el('div', { class: 'size-note', text: ONE_SIZE });
+      }
+
+      const add = el('button', { class: 'btn', type: 'button', text: 'Aggiungi al carrello', onclick: () => {
+        addToCart(p.id, select ? select.value : (p.oneSize ? ONE_SIZE : null));
+        if (afterAdd) afterAdd();
+      } });
+      return [sizeControl, add];
+    }
+
+    function buildTag(p) {
+      return p.tag ? el('span', { class: 'tag tag--' + p.tag.style, text: p.tag.text }) : null;
+    }
+
+    PRODUCTS.forEach(p => {
+      // l'immagine è un pulsante: apre l'anteprima rapida
+      const image = el('button', {
+        class: 'product__img',
+        type: 'button',
+        'aria-label': 'Anteprima rapida: ' + p.name,
+        onclick: () => openQuickView(p)
+      }, [
+        buildTag(p),
+        el('span', { class: 'product__img-inner', text: 'Immagine prodotto' }),
+        el('span', { class: 'product__hint', 'aria-hidden': 'true', text: 'Anteprima rapida' })
+      ]);
+
+      grid.append(el('article', { class: 'product' }, [
+        image,
+        el('div', { class: 'product__head' }, [
+          el('h2', { class: 'product__name', text: p.name }),
+          el('span', { class: 'product__price', text: fmt(p.price) })
+        ]),
+        el('div', { class: 'product__actions' }, buildActions(p))
+      ]));
+    });
+
+    // ---------- Anteprima rapida ----------
+    const qv = document.getElementById('qv');
+    const qvClose = document.getElementById('qv-close');
+    let qvLastFocus = null;
+
+    function openQuickView(p) {
+      qvLastFocus = document.activeElement;
+      const img = document.getElementById('qv-img');
+      img.replaceChildren(buildTag(p) || '', 'Immagine prodotto');
+      img.setAttribute('aria-label', 'Segnaposto immagine: ' + p.name);
+      document.getElementById('qv-name').textContent = p.name;
+      document.getElementById('qv-price').textContent = fmt(p.price);
+      document.getElementById('qv-desc').textContent = DESCRIPTIONS[p.id] || '';
+      document.getElementById('qv-actions').replaceChildren(...buildActions(p, closeQuickView).filter(Boolean));
+
+      qv.classList.add('is-open');
+      qv.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('no-scroll');
+      qvClose.focus({ preventScroll: true });
+    }
+
+    function closeQuickView() {
+      if (!qv.classList.contains('is-open')) return;
+      qv.classList.remove('is-open');
+      qv.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('no-scroll');
+      if (qvLastFocus) qvLastFocus.focus({ preventScroll: true });
+    }
+
+    qvClose.addEventListener('click', closeQuickView);
+    qv.addEventListener('click', e => { if (e.target === qv) closeQuickView(); }); // clic sullo sfondo
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeQuickView();
+    });
+
+    // ---------- Logica carrello ----------
+    function addToCart(id, size) {
+      const existing = cart.find(i => i.id === id && i.size === size);
+      if (existing) existing.qty = Math.min(99, existing.qty + 1);
+      else cart.push({ id, size, qty: 1 });
+      saveCart();
+      render();
+      bumpBadge();
+      const p = PRODUCTS.find(x => x.id === id);
+      showToast(`✓ ${p.name} ${p.fem ? 'aggiunta' : 'aggiunto'} al carrello`);
+    }
+
+    // ---------- Notifica a comparsa (si chiude da sola dopo 2 secondi) ----------
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('is-visible');
+      clearTimeout(toastTimer); // aggiunte ravvicinate: riparte il conteggio
+      toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2000);
+    }
+
+    function changeQty(index, delta) {
+      cart[index].qty = Math.min(99, cart[index].qty + delta);
+      if (cart[index].qty <= 0) cart.splice(index, 1);
+      saveCart();
+      render();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      saveCart();
+      render();
+    }
+
+    const body = document.getElementById('cart-body');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const badge = document.getElementById('cart-badge');
+    const cartBtn = document.getElementById('cart-open');
+
+    function render() {
+      body.replaceChildren();
+      const count = cart.reduce((n, i) => n + i.qty, 0);
+      let subtotal = 0;
+
+      if (!cart.length) {
+        const empty = el('div', { class: 'cart__empty' }, [
+          el('p', { text: 'Il tuo carrello è vuoto' }),
+          el('span', { text: 'Dai un\'occhiata alle novità del negozio.' }),
+          el('button', { type: 'button', class: 'btn', text: 'Sfoglia il merch', onclick: browseMerch })
+        ]);
+        empty.insertAdjacentHTML('afterbegin', BAG_ICON); // icona statica, nessun dato esterno
+        body.append(empty);
+      }
+
+      cart.forEach((item, index) => {
+        const p = PRODUCTS.find(x => x.id === item.id);
+        subtotal += p.price * item.qty;
+
+        body.append(el('div', { class: 'cart-item' }, [
+          el('div', { class: 'cart-item__img', 'aria-hidden': 'true' }),
+          el('div', {}, [
+            el('div', { class: 'cart-item__name', text: p.name }),
+            item.size ? el('div', { class: 'cart-item__size', text: item.size === ONE_SIZE ? ONE_SIZE : 'Taglia: ' + item.size }) : null,
+            el('div', { class: 'cart-item__unit', text: fmt(p.price) + ' cad.' }),
+            el('div', { class: 'qty' }, [
+              el('button', { type: 'button', 'aria-label': 'Diminuisci quantità di ' + p.name, text: '−', onclick: () => changeQty(index, -1) }),
+              el('span', { text: String(item.qty) }),
+              el('button', { type: 'button', 'aria-label': 'Aumenta quantità di ' + p.name, text: '+', onclick: () => changeQty(index, 1) })
+            ])
+          ]),
+          el('div', { class: 'cart-item__right' }, [
+            el('span', { class: 'cart-item__total', text: fmt(p.price * item.qty) }),
+            el('button', { type: 'button', class: 'cart__remove', text: 'Rimuovi', onclick: () => removeItem(index) })
+          ])
+        ]));
+      });
+
+      subtotalEl.textContent = fmt(subtotal);
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.classList.toggle('is-visible', count > 0);
+      cartBtn.setAttribute('aria-label', `Apri il carrello (${count} ${count === 1 ? 'articolo' : 'articoli'})`);
+      checkout.disabled = count === 0;
+      cartMsg.textContent = '';
+    }
+
+    // ---------- Pagamento: Checkout Session con le quantità del carrello ----------
+    const checkout = document.getElementById('checkout');
+    const cartMsg = document.getElementById('cart-msg');
+    checkout.innerHTML = LOCK_ICON; // icona statica, nessun dato esterno
+    checkout.append('Vai alla cassa');
+
+    checkout.addEventListener('click', async () => {
+      if (!cart.length) return;
+      checkout.disabled = true;
+      cartMsg.textContent = 'Reindirizzamento al pagamento sicuro…';
+      try {
+        const res = await fetch(CHECKOUT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // si inviano solo id, taglia e quantità: i prezzi li decide il server
+          body: JSON.stringify({ items: cart.map(({ id, size, qty }) => ({ id, size, qty })) })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.url) throw new Error(data.error || 'Risposta non valida');
+        window.location.href = data.url; // pagina di pagamento Stripe
+      } catch (err) {
+        cartMsg.textContent = 'Non è stato possibile avviare il pagamento. Riprova tra poco.';
+        checkout.disabled = false;
+        console.error(err);
+      }
+    });
+
+    function bumpBadge() {
+      badge.classList.remove('bump');
+      void badge.offsetWidth; // riavvia l'animazione
+      badge.classList.add('bump');
+    }
+
+    // Se il carrello cambia in un'altra scheda (o thanks.html rimuove un articolo), aggiorna questa
+    window.addEventListener('storage', e => {
+      if (e.key === STORAGE_KEY) { cart = loadCart(); render(); }
+    });
+
+    // ---------- Apertura / chiusura pannello ----------
+    const cartPanel = document.getElementById('cart');
+    const overlay = document.getElementById('overlay');
+    const closeBtn = document.getElementById('cart-close');
+    let lastFocus = null;
+
+    function openCart() {
+      if (cartPanel.classList.contains('is-open')) return;
+      lastFocus = document.activeElement;
+      cartPanel.classList.add('is-open');
+      overlay.classList.add('is-open');
+      cartPanel.setAttribute('aria-hidden', 'false');
+      cartBtn.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('no-scroll');
+      closeBtn.focus({ preventScroll: true });
+    }
+
+    function closeCart() {
+      cartPanel.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      cartPanel.setAttribute('aria-hidden', 'true');
+      cartBtn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('no-scroll');
+      if (lastFocus) lastFocus.focus({ preventScroll: true });
+    }
+
+    // "Sfoglia il merch": chiude il carrello e scorre fino alla griglia dei prodotti
+    function browseMerch() {
+      lastFocus = null;
+      closeCart();
+      const grid = document.getElementById('product-grid');
+      grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const firstButton = grid.querySelector('button, select');
+      if (firstButton) firstButton.focus({ preventScroll: true });
+    }
+
+    cartBtn.addEventListener('click', openCart);
+    closeBtn.addEventListener('click', closeCart);
+    overlay.addEventListener('click', closeCart);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && cartPanel.classList.contains('is-open')) closeCart();
+    });
+
+    render();
+
+    // ---------- Menu mobile ----------
+    const nav = document.getElementById('nav');
+    const toggle = nav.querySelector('.nav__toggle');
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
+    });
+    nav.querySelectorAll('.nav__links a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Apri il menu');
+      });
+    });
+  </script>
+</body>
+</html>

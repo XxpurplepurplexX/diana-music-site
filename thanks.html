@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Ordine confermato — DIANA</title>
+  <style>
+    :root {
+      --bianco: #FFFFFF;
+      --nero: #1A1A1A;
+      --blu: #3B82F6;
+      --blu-scuro: #2563EB;
+      --grigio-bordo: #E5E7EB;
+      --grigio-testo: #6B7280;
+      --nav-h: 72px;
+      --max-w: 1100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+      background: var(--bianco);
+      color: var(--nero);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Navigazione fissa ---------- */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--grigio-bordo);
+      z-index: 100;
+    }
+    .nav .container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav__logo { font-weight: 900; font-size: 1.25rem; letter-spacing: 0.2em; }
+    .nav__links { display: flex; gap: 36px; list-style: none; }
+    .nav__links a {
+      position: relative;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 0;
+    }
+    .nav__links a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%; height: 2px;
+      background: var(--blu);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav__links a:hover::after,
+    .nav__links a:focus-visible::after { transform: scaleX(1); }
+
+    .nav__toggle {
+      display: none;
+      background: none;
+      border: 0;
+      width: 44px; height: 44px;
+      cursor: pointer;
+      position: relative;
+    }
+    .nav__toggle span,
+    .nav__toggle span::before,
+    .nav__toggle span::after {
+      position: absolute;
+      left: 10px;
+      width: 24px; height: 2px;
+      background: var(--nero);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .nav__toggle span { top: 21px; }
+    .nav__toggle span::before, .nav__toggle span::after { content: ""; left: 0; }
+    .nav__toggle span::before { top: -7px; }
+    .nav__toggle span::after { top: 7px; }
+    .nav.is-open .nav__toggle span { background: transparent; }
+    .nav.is-open .nav__toggle span::before { transform: translateY(7px) rotate(45deg); }
+    .nav.is-open .nav__toggle span::after { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ---------- Pulsante ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--blu);
+      color: var(--bianco);
+      border: 0;
+      border-radius: 999px;
+      padding: 16px 40px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn:hover { background: var(--blu-scuro); transform: translateY(-2px); }
+    .btn:focus-visible, .nav a:focus-visible, .nav__toggle:focus-visible {
+      outline: 3px solid var(--blu);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Conferma ---------- */
+    .thanks {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: calc(var(--nav-h) + 48px) 0 64px;
+      position: relative;
+      z-index: 1;
+    }
+    .thanks__icon {
+      width: clamp(96px, 20vw, 128px);
+      height: clamp(96px, 20vw, 128px);
+      margin: 0 auto 32px;
+      color: var(--blu);
+      animation: compare 0.6s cubic-bezier(.34, 1.56, .64, 1) both;
+    }
+    .thanks__icon circle {
+      fill: rgba(59, 130, 246, 0.1);
+      stroke: currentColor;
+      stroke-width: 3;
+    }
+    .thanks__icon path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: traccia 0.5s ease-out 0.45s forwards;
+    }
+    @keyframes compare { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+    @keyframes traccia { to { stroke-dashoffset: 0; } }
+
+    .thanks__title {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .thanks__text {
+      color: var(--grigio-testo);
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      max-width: 40ch;
+      margin: 16px auto 40px;
+    }
+    .thanks__title, .thanks__text, .thanks .btn {
+      animation: sale 0.6s ease-out both;
+    }
+    .thanks__title { animation-delay: 0.5s; }
+    .thanks__text  { animation-delay: 0.65s; }
+    .thanks .btn   { animation-delay: 0.8s; }
+    @keyframes sale { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Coriandoli: canvas sopra la pagina, non intercetta i clic */
+    #coriandoli {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--grigio-bordo);
+      padding: 32px 0;
+      font-size: 0.85rem;
+      color: var(--grigio-testo);
+      text-align: center;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 720px) {
+      :root { --nav-h: 64px; }
+      .nav__toggle { display: block; }
+      .nav__links {
+        position: absolute;
+        top: var(--nav-h);
+        left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: var(--bianco);
+        border-bottom: 1px solid var(--grigio-bordo);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .nav.is-open .nav__links { max-height: 320px; }
+      .nav__links li a { display: block; padding: 18px 24px; }
+      .nav__links a::after { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .thanks .btn { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .thanks__icon path { stroke-dashoffset: 0; }
+      #coriandoli { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigazione fissa -->
+  <header class="nav" id="nav">
+    <div class="container">
+      <a href="index.html" class="nav__logo" aria-label="DIANA, torna alla home">DIANA</a>
+      <button class="nav__toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span>
+      </button>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#musica">Musica</a></li>
+        <li><a href="merch.html">Merchandising</a></li>
+        <li><a href="tour.html">Tour</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <canvas id="coriandoli" aria-hidden="true"></canvas>
+
+  <main class="thanks">
+    <div class="container">
+      <svg class="thanks__icon" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="29"/>
+        <path d="M19 33.5l9 9 17-19"/>
+      </svg>
+      <h1 class="thanks__title">Ordine confermato!</h1>
+      <p class="thanks__text">Grazie per aver sostenuto Diana. Il tuo ordine è in arrivo.</p>
+      <a href="index.html" class="btn">Torna al sito</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 DIANA. Tutti i diritti riservati.</div>
+  </footer>
+
+  <script>
+    // ---------- Carrello: svuotato dopo il pagamento ----------
+    // Stripe rimanda qui con ?session_id=... solo a pagamento completato:
+    // l'intero carrello è stato pagato in un'unica Checkout Session.
+    (function () {
+      if (!new URLSearchParams(location.search).has('session_id')) return;
+      try {
+        localStorage.removeItem('diana-cart');
+        localStorage.removeItem('diana-cart-pending'); // residuo della versione con Payment Link
+      } catch (e) { /* storage non disponibile */ }
+    })();
+
+    // ---------- Coriandoli (una sola pioggia leggera al caricamento) ----------
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const canvas = document.getElementById('coriandoli');
+      const ctx = canvas.getContext('2d');
+      const COLORI = ['#3B82F6', '#60A5FA', '#93C5FD', '#1D4ED8', '#1A1A1A'];
+      const DURATA = 4500; // ms prima che smettano di cadere nuovi pezzi
+      let w, h, dpr;
+
+      function resize() {
+        dpr = window.devicePixelRatio || 1;
+        w = canvas.clientWidth;
+        h = canvas.clientHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const quanti = Math.round(Math.min(140, w / 8));
+      const pezzi = Array.from({ length: quanti }, () => ({
+        x: Math.random() * w,
+        y: -20 - Math.random() * h * 0.6,      // partenza scaglionata sopra lo schermo
+        size: 5 + Math.random() * 6,
+        colore: COLORI[Math.floor(Math.random() * COLORI.length)],
+        vy: 1.2 + Math.random() * 1.8,          // velocità di caduta
+        oscilla: Math.random() * Math.PI * 2,   // fase dell'ondeggiamento
+        rot: Math.random() * Math.PI,
+        vrot: (Math.random() - 0.5) * 0.15,
+        tondo: Math.random() < 0.3
+      }));
+
+      const inizio = performance.now();
+
+      function frame(t) {
+        const trascorso = t - inizio;
+        ctx.clearRect(0, 0, w, h);
+        let visibili = 0;
+
+        pezzi.forEach(p => {
+          p.oscilla += 0.03;
+          p.x += Math.sin(p.oscilla) * 0.8;
+          p.y += p.vy;
+          p.rot += p.vrot;
+
+          // finché dura l'effetto, i pezzi usciti in basso ricadono dall'alto
+          if (p.y > h + 20 && trascorso < DURATA) {
+            p.y = -20;
+            p.x = Math.random() * w;
+          }
+          if (p.y > h + 20) return;
+          visibili++;
+
+          // dissolvenza nell'ultima parte dello schermo
+          ctx.globalAlpha = Math.max(0, Math.min(1, (h - p.y) / (h * 0.25))) * 0.85;
+          ctx.fillStyle = p.colore;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          if (p.tondo) {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.scale(1, Math.cos(p.oscilla)); // effetto "giravolta"
+            ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+          }
+          ctx.restore();
+        });
+
+        if (visibili > 0) {
+          requestAnimationFrame(frame);
+        } else {
+          ctx.clearRect(0, 0, w, h);
+          window.removeEventListener('resize', resize);
+          canvas.remove();
+        }
+      }
+      requestAnimationFrame(frame);
+    })();
+
+    // ---------- Menu mobile ----------
+    const nav = document.getElementById('nav');
+    const toggle = nav.querySelector('.nav__toggle');
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
+    });
+  </script>
+</body>
+</html>
